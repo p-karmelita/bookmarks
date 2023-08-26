@@ -267,4 +267,8 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+#certificates
+cert.crt
+cert.key
+
 # End of https://www.toptal.com/developers/gitignore/api/python,django
