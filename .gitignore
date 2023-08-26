@@ -271,4 +271,12 @@ pyrightconfig.json
 cert.crt
 cert.key
 
+#images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.svg
+
 # End of https://www.toptal.com/developers/gitignore/api/python,django
