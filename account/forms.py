@@ -37,7 +37,7 @@ class UserEditForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError('This email is occupied.')
         return data
-    
+
 
 class ProfileEditForm(forms.ModelForm):
     class Meta:
@@ -64,5 +64,5 @@ class UserRegistrationForm(forms.ModelForm):
     def clean_email(self):
         data = self.cleaned_data['email']
         if User.objects.filter(email=data).exists():
-            raise.forms.ValidationError('This email adress is already in use.')
+            raise forms.ValidationError('This email adress is already in use.')
         return data
