@@ -5,9 +5,19 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, \
+                                  PageNotAnInteger
 from .forms import ImageCreateForm
 from .models import Image
+from actions.utils import create_action
+import redis
+from django.conf import settings
+
+
+# connect to redis
+r = redis.Redis(host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                db=settings.REDIS_DB)
 
 
 @login_required
@@ -22,6 +32,7 @@ def image_create(request):
             # assign current user to the item
             new_image.user = request.user
             new_image.save()
+            create_action(request.user, 'bookmarked image', new_image)
             messages.success(request, 'Image added successfully')
             # redirect to new created image detail view
             return redirect(new_image.get_absolute_url())
@@ -36,10 +47,15 @@ def image_create(request):
 
 def image_detail(request, id, slug):
     image = get_object_or_404(Image, id=id, slug=slug)
+    # increment total image views by 1
+    total_views = r.incr(f'image:{image.id}:views')
+    # increment image ranking by 1
+    r.zincrby('image_ranking', 1, image.id)
     return render(request,
                   'images/image/detail.html',
                   {'section': 'images',
-                   'image': image})
+                   'image': image,
+                   'total_views': total_views})
 
 
 @login_required
@@ -52,6 +68,7 @@ def image_like(request):
             image = Image.objects.get(id=image_id)
             if action == 'like':
                 image.users_like.add(request.user)
+                create_action(request.user, 'likes', image)
             else:
                 image.users_like.remove(request.user)
             return JsonResponse({'status': 'ok'})

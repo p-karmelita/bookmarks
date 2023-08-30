@@ -3,6 +3,7 @@
 {% block title %}{{ image.title }}{% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
   <h1>{{ image.title }}</h1>
   {% load thumbnail %}
   <a href="{{ image.image.url }}">
@@ -11,6 +12,16 @@
   {% with total_likes=image.users_like.count users_like=image.users_like.all %}
     <div class="image-info">
       <div>
+=======
+<h1>{{ image.title }}</h1>
+{% load thumbnail %}
+<a href="{{ image.image.url }}">
+    <img src="{% thumbnail image.image 300x0 %}" class="image-detail">
+</a>
+{% with total_likes=image.users_like.count %}
+<div class="image-info">
+    <div>
+>>>>>>> eb48859c24a85c52b50e624bf4d3219fc31e2e02
         <span class="count">
           <span class="total">{{ total_likes }}</span>
           like{{ total_likes|pluralize }}
@@ -81,3 +92,4 @@
     })
   });
 {% endblock %}
+        
