@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django.shortcuts import reverse
 
 
-
 class Image(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              related_name='images_created',
@@ -18,10 +17,12 @@ class Image(models.Model):
     created = models.DateField(auto_now_add=True)
     users_like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='images_liked',
                                         blank=True)
+    total_likes = models.PositiveIntegerField(default=0)
 
     class Meta:
         indexes = [
             models.Index(fields=['-created']),
+            models.Index(fields=['-total_likes']),
         ]
         ordering = ['-created']
 
